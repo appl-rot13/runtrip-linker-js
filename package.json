@@ -1,13 +1,20 @@
 {
   "name": "runtrip-linker-js",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
-    "dev": "wrangler dev --test-scheduled",
-    "start": "wrangler dev --test-scheduled"
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "oauth-1.0a": "^2.2.6",
+    "twitter-text": "^3.1.0"
   },
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.12.4",
+    "vitest": "~3.2.0",
     "wrangler": "^4.80.0"
   }
 }
