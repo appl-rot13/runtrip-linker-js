@@ -22,8 +22,8 @@ export async function getLatestJournal(userId) {
 	return journals[0].journal;
 }
 
-export async function* getNewJournals(env, userId, journalId) {
-	const journals = await getJournalsWithCache(env, userId);
+export async function* getNewJournals(userId, journalId) {
+	const journals = await getJournals(userId);
 
 	let take = false;
 	for (let i = journals.length - 1; i >= 0; i--) {
@@ -40,36 +40,9 @@ export async function* getNewJournals(env, userId, journalId) {
 }
 
 export async function getJournals(userId) {
-	const response = await fetchJournals(userId);
-	return await extractJournals(userId, response);
-}
-
-export async function getJournalsWithCache(env, userId) {
-	const prevEtag = await env.KV.get("ETag");
-	const response = await fetchJournals(userId, prevEtag);
-
-	if (response.status === 304) {
-		return [];
-	}
-
-	const currEtag = response.headers.get("ETag");
-	if (currEtag) {
-		await env.KV.put("ETag", currEtag);
-	}
-
-	return await extractJournals(userId, response);
-}
-
-async function fetchJournals(userId, etag = null) {
-	return await fetch(`https://runtrip.jp/users/${userId}`, {
-		headers: {
-			...(etag && { "If-None-Match": etag }),
-		},
-	});
-}
-
-async function extractJournals(userId, response) {
+	const response = await fetch(`https://runtrip.jp/users/${userId}`);
 	const html = await response.text();
+
 	const json = utils.substringBetween(html, '<script id="__NEXT_DATA__" type="application/json">', '</script>');
 	const data = JSON.parse(json);
 
