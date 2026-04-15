@@ -2,28 +2,28 @@ import * as twitter from "./twitter.js";
 import * as utils from "./utils.js";
 
 export async function getLatestJournalId(env, userId) {
-	const journalId = await env.KV.get(`${userId}:JournalID`);
+	const journalId = await env.KV.get(userId);
 	if (journalId) {
 		return journalId;
 	}
 
-	const journal = await getLatestJournal(env, userId);
+	const journal = await getLatestJournal(userId);
 	await setLatestJournalId(env, userId, journal.id);
 
 	return journal.id;
 }
 
 export async function setLatestJournalId(env, userId, journalId) {
-	await env.KV.put(`${userId}:JournalID`, journalId);
+	await env.KV.put(userId, journalId);
 }
 
-export async function getLatestJournal(env, userId) {
-	const journals = await getJournals(env, userId);
+export async function getLatestJournal(userId) {
+	const journals = await getJournals(userId);
 	return journals[0].journal;
 }
 
-export async function* getNewJournals(env, userId, journalId) {
-	const journals = await getJournals(env, userId, true);
+export async function* getNewJournals(userId, journalId) {
+	const journals = await getJournals(userId);
 
 	let take = false;
 	for (let i = journals.length - 1; i >= 0; i--) {
@@ -39,20 +39,11 @@ export async function* getNewJournals(env, userId, journalId) {
 	}
 }
 
-export async function getJournals(env, userId, useCache = false) {
+export async function getJournals(userId) {
 	const response = await fetch(`https://runtrip.jp/users/${userId}`);
 	const html = await response.text();
 
 	const json = utils.substringBetween(html, '<script id="__NEXT_DATA__" type="application/json">', '</script>');
-	const hash = await utils.sha1(json);
-	if (useCache) {
-		const prevHash = await env.KV.get(`${userId}:Hash`);
-		if (hash === prevHash) {
-			return [];
-		}
-	}
-
-	await env.KV.put(`${userId}:Hash`, hash);
 	const data = JSON.parse(json);
 
 	const uri = `https://api.runtrip.jp/v1/users/${userId}/journals?pageNumber=0&pageSize=9:$get`;

@@ -21,12 +21,3 @@ export async function fetchImageAsBase64(url) {
 
 	return Buffer.from(buffer).toString("base64");
 }
-
-export async function sha1(str) {
-	const buffer = await crypto.subtle.digest(
-		"SHA-1",
-		new TextEncoder().encode(str),
-	);
-
-	return Buffer.from(buffer).toString("hex");
-}
