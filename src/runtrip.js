@@ -22,21 +22,20 @@ export async function getLatestJournal(userId) {
 	return journals[0].journal;
 }
 
-export async function* getNewJournals(userId, journalId) {
+export async function getNewJournals(userId, journalId) {
 	const journals = await getJournals(userId);
 
-	let take = false;
-	for (let i = journals.length - 1; i >= 0; i--) {
-		const journal = journals[i].journal;
-
-		if (take) {
-			yield journal;
-		}
-
-		if (journal.id === journalId) {
-			take = true;
-		}
+	let index = journals.findIndex(t => t.journal.id === journalId);
+	if (index <= 0) {
+		return [];
 	}
+
+	const newJournals = new Array(index);
+	for (let i = 0; i < newJournals.length; i++) {
+		newJournals[i] = journals[--index].journal;
+	}
+
+	return newJournals;
 }
 
 export async function getJournals(userId) {
