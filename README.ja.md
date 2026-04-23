@@ -2,6 +2,8 @@
 
 # Runtrip Linker
 
+[![GitHub Actions](../../actions/workflows/test.yml/badge.svg)](../../actions)
+
 Runtripでの投稿をX(Twitter)に反映するアプリケーション。
 
 ## 概要
