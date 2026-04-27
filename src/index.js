@@ -1,6 +1,10 @@
 import * as runtrip from "./runtrip.js";
 
 export default {
+	async fetch(request, env, ctx) {
+		return new Response("Not Found", { status: 404 });
+	},
+
 	async scheduled(event, env, ctx) {
 		ctx.waitUntil(tweetNewJournals(env).catch(err => {
 			console.error("Unhandled error:", err);
