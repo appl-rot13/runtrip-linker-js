@@ -2,31 +2,23 @@ import * as twitter from "./twitter.js";
 import * as utils from "./utils.js";
 
 export async function getLatestJournalId(env, userId) {
-	const journalId = await env.KV.get(userId);
-	if (journalId) {
-		return journalId;
-	}
-
-	const journal = await getLatestJournal(userId);
-	await setLatestJournalId(env, userId, journal.id);
-
-	return journal.id;
+	return await env.KV.get(userId);
 }
 
 export async function setLatestJournalId(env, userId, journalId) {
 	await env.KV.put(userId, journalId);
 }
 
-export async function getLatestJournal(userId) {
-	const journals = await getJournals(userId);
-	return journals[0].journal;
-}
-
-export async function getNewJournals(userId, journalId) {
+export async function getNewJournals(env, userId, journalId) {
 	const journals = await getJournals(userId);
 
 	let index = journals.findIndex(t => t.journal.id === journalId);
-	if (index <= 0) {
+	if (index === -1) {
+		await setLatestJournalId(env, userId, journals[0].journal.id);
+		return [];
+	}
+
+	if (index === 0) {
 		return [];
 	}
 
