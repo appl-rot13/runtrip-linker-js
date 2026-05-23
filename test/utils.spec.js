@@ -1,23 +1,30 @@
 import { describe, it, expect } from "vitest";
-import * as utils from "../src/utils.js";
+import { substringBetween } from "../src/utils.js";
 
 describe("substringBetween", () => {
-	describe("valid cases", () => {
-		it("returns the substring", () => {
-			const result = utils.substringBetween("<script>test</script>", "<script>", "</script>");
-			expect(result).toBe("test");
-		});
-	});
-
-	describe("invalid cases", () => {
-		it("returns null if the start string is not found", () => {
-			const result = utils.substringBetween("</script>test</script>", "<script>", "</script>");
-			expect(result).toBeNull();
-		});
-
-		it("returns null if the end string is not found", () => {
-			const result = utils.substringBetween("<script>test<script>", "<script>", "</script>");
-			expect(result).toBeNull();
-		});
+	it.each([
+		{
+			case: "returns the substring",
+			str: "<script>test</script>",
+			start: "<script>",
+			end: "</script>",
+			expected: "test",
+		},
+		{
+			case: "returns null when the start string is missing",
+			str: "</script>test</script>",
+			start: "<script>",
+			end: "</script>",
+			expected: null,
+		},
+		{
+			case: "returns null when the end string is missing",
+			str: "<script>test<script>",
+			start: "<script>",
+			end: "</script>",
+			expected: null,
+		},
+	])("$case", ({ str, start, end, expected }) => {
+		expect(substringBetween(str, start, end)).toBe(expected);
 	});
 });
