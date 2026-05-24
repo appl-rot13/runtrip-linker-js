@@ -10,7 +10,11 @@ updates:
     schedule:
       interval: weekly
     groups:
-      vitest:
+      dev-dependencies:
         patterns:
+          - "wrangler"
           - "vitest"
           - "@cloudflare/vitest-pool-workers"
+        update-types:
+          - minor
+          - patch
