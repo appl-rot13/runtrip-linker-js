@@ -4,11 +4,13 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+      day: friday
 
   - package-ecosystem: npm
     directory: "/"
     schedule:
       interval: weekly
+      day: friday
     groups:
       dev-dependencies:
         patterns:
