@@ -14,8 +14,8 @@
     "twitter-text": "^3.1.0"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.16.10",
-    "vitest": "~4.1.7",
+    "@cloudflare/vitest-pool-workers": "^0.16.13",
+    "vitest": "~4.1.8",
     "wrangler": "^4.92.0"
   }
 }
